@@ -1,5 +1,6 @@
 ARTIFACT = 'artifact'
 DATA_FILE = 'data.csv'
+LOGGING_DIR = 'Logs'
 
 # Data Ingestion
 DATA_INGESTIONDIR = 'data_ingestion'
