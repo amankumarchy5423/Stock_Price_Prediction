@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# MongoDB details
+
 MONGO_URI = os.getenv('MONGO_URL')
 DB_NAME = 'stock_price_db'
 COLLECTION_NAME = 'stock_data'
@@ -73,7 +73,7 @@ with DAG(
     def insert_transformed_data_into_mongo(transformed_data: dict):
         insert_to_mongo(transformed_data)
 
-    # Wiring
+    
     raw_data = get_stock_data()
     transformed = transform_data(raw_data)
     insert_transformed_data_into_mongo(transformed)
