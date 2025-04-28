@@ -3,7 +3,7 @@ import sys
 
 from src.Common import common_variable
 from src.Exception.Project_Exception import MyException
-from src.loggers.logger
+from src.loggers.logger import my_log
 
 
 
@@ -17,5 +17,6 @@ class DataIngestionConfig:
             
 
         except Exception as e :
-            raise e
+            my_log.info(e)
+            raise MyException(e,sys)
 

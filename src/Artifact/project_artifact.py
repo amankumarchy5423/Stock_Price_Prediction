@@ -3,5 +3,5 @@ from dataclasses import dataclass
 
 
 @dataclass
-class DataIngestion:
+class DataIngestionArtifact:
     data_dir : str
