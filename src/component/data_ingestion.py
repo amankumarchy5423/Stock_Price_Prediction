@@ -49,13 +49,15 @@ class DataIngestion:
             my_log.error(e)
             raise MyException(e,sys)
         
-    def initiate_dataingestion(self):
+    def initiate_dataingestion(self) -> DataIngestionArtifact:
         try:
             self.data_fetch()
             my_log.info("data fetching ended")
 
             self.data_local()
             my_log.info("data_local saves successfully ")
+
+            return DataIngestionArtifact(data_dir = self.config.data_file)
 
         except Exception as e:
             my_log.error(e)

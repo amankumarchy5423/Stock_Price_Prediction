@@ -37,7 +37,7 @@ def insert_to_mongo(data):
 with DAG(
     dag_id='price_prediction_data',
     start_date=datetime(2023, 3, 21),
-    schedule_interval='@daily',
+    schedule_interval='@hourly',
     catchup=False
 ) as dag:
 

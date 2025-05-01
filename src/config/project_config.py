@@ -19,4 +19,12 @@ class DataIngestionConfig:
         except Exception as e :
             my_log.info(e)
             raise MyException(e,sys)
+        
+class DataValidationConfig:
+    def __init__(self):
+        try:
+            pass
+        except Exception as e :
+            my_log.error(e)
+            raise MyException(e,sys)
 
