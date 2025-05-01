@@ -12,13 +12,12 @@ load_dotenv()
 
 
 class DataIngestion:
-    def __init__(self,config : DataIngestionConfig,
-                 artifact = DataIngestionArtifact()):
+    def __init__(self,config : DataIngestionConfig):
         try :
             self.config = config
-            self.artifact = artifact
+            # self.artifact = artifact
             self.client = pymongo.MongoClient(os.getenv('MONGO_URL'))
-            self.data = None
+            self.data : pd.DataFrame = None
         except Exception as e :
             my_log.error(e)
             raise MyException(e,sys)
@@ -26,23 +25,38 @@ class DataIngestion:
     def data_fetch(self):
         try :
             
-            self.data = self.client[os.getenv('MONGO_DB')][os.getenv('MONGO_COLLECTION')] .find()
+            cloud_data  = self.client[os.getenv('MONGO_DB')][os.getenv('MONGO_COLLECTION')] .find()
             my_log.info("data fetched from mogo atlas ")
+
+            self.data  = (pd.DataFrame(cloud_data))
+            self.data.drop(columns=['_id'],inplace=True)
+            my_log.info("cloud data is converted into pd.DataFrame ")
 
         except Exception as e:
             my_log.error(e)
             raise MyException(e,sys)
         
-    def data_local(self):
+    def data_local(self) -> None:
         try:
-            pass
+            os.makedirs(self.config.artifact , exist_ok=True)
+            os.makedirs(self.config.data_ingestion_dir,exist_ok=True)
+            my_log.info("Directory created ...")
+
+            self.data.to_csv(self.config.data_file)
+            my_log.info("data save into local directory")
+
         except Exception as e:
             my_log.error(e)
             raise MyException(e,sys)
         
     def initiate_dataingestion(self):
         try:
-            pass
+            self.data_fetch()
+            my_log.info("data fetching ended")
+
+            self.data_local()
+            my_log.info("data_local saves successfully ")
+
         except Exception as e:
             my_log.error(e)
             raise MyException(e,sys)

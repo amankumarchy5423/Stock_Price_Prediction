@@ -6,7 +6,9 @@ from src.Common import common_variable
 
 
 logging_dir = common_variable.LOGGING_DIR
-logging_file = f"{datetime.now().strftime("%d/%m/%Y//%H:%M:%S")}.log"
+os.makedirs(logging_dir,exist_ok=True)
+
+logging_file = f"{datetime.now().strftime("%d_%m_%Y__%H_%M_%S")}.log"
 
 log_file = os.path.join(logging_dir,logging_file)
 

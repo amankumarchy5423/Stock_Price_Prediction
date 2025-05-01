@@ -1,0 +1,3 @@
+['remote "origin"']
+    url = s3://dvc
+    endpointurl = https://dagshub.com/amankumarchy5423/Stock_Price_Prediction.s3
