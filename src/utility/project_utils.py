@@ -8,7 +8,7 @@ import joblib
 
 
 
-def open_file(file_path : str ) -> any :
+def save_file(file_path : str ,data : any) -> any :
     try:
         file_lis = file_path.split('.')[-1].lower()
         if file_lis =='csv'  :

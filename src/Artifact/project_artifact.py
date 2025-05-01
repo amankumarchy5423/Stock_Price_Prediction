@@ -8,5 +8,4 @@ class DataIngestionArtifact:
 
 @dataclass
 class DataValidationArtifact:
-    train_df : str
-    test_df : str
+    data_dir : str

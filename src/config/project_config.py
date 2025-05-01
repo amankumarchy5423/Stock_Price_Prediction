@@ -23,7 +23,9 @@ class DataIngestionConfig:
 class DataValidationConfig:
     def __init__(self):
         try:
-            pass
+            self.data_validation_dir = os.path.join(common_variable.ARTIFACT,common_variable.DATA_VALIDATION)
+            self.data_file = os.path.join(self.data_validation_dir,
+                                          common_variable.DATA_FILE)
         except Exception as e :
             my_log.error(e)
             raise MyException(e,sys)
