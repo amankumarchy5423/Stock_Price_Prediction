@@ -54,6 +54,13 @@ class DataValidation:
         except Exception as e:
             my_log.error(e)
             raise MyException(e, sys)
+        
+    def outlier_handling(self,data : pd.DataFrame):
+        try:
+            pass
+        except Exception as e:
+            my_log.error(e)
+            raise MyException(e,sys)
 
         
     def data_save_artifact(self,data : pd.DataFrame) -> any :

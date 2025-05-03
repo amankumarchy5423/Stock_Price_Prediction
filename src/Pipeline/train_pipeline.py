@@ -1,9 +1,10 @@
 from src.component.data_ingestion import DataIngestion
 from src.loggers.logger import my_log
 from src.Exception.Project_Exception import MyException
-from src.config.project_config import DataIngestionConfig,DataValidationConfig
-from src.Artifact.project_artifact import DataIngestionArtifact,DataValidationArtifact
+from src.config.project_config import DataIngestionConfig,DataValidationConfig,DataTransformationConfig
+from src.Artifact.project_artifact import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact
 from src.component.data_validation import DataValidation
+from src.component.data_transformation import DataTransformation
 
 import os,sys
 
@@ -49,6 +50,21 @@ class TrainPipeline:
             my_log.error(e)
             raise MyException(e,sys)
         
+    def data_transformation_pipe(self,artifact : DataValidationArtifact):
+        try:
+            my_log.info("<<< Data Transformation Started >>>")
+
+            config_obj = DataTransformationConfig()
+
+            transformation_obj = DataTransformation(config_obj,artifact)
+
+            output = transformation_obj.initiate_transformation()
+            my_log.info("<<< Data Transformation Ended >>>")
+            return output
+        except Exception as e :
+            my_log.error(e)
+            raise MyException(e,sys)
+        
     def initiate_pipeline(self) -> None:
         try:
             my_log.info(" <<< train pipeline started >>>")
@@ -58,6 +74,9 @@ class TrainPipeline:
 
             data_validation_out = self.data_validation_pipe(artifact=data_ingestion_out)
             my_log.info("data validation pipeline completed successfully ...")
+
+            data_transformation_out = self.data_transformation_pipe(data_validation_out)
+            my_log.info("data validation pipeline Completed successfully ...")
 
             my_log.info(" <<< train pipeline ended >>>")
         except Exception as e :

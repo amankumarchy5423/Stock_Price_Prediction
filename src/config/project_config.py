@@ -29,4 +29,17 @@ class DataValidationConfig:
         except Exception as e :
             my_log.error(e)
             raise MyException(e,sys)
+        
+class DataTransformationConfig:
+    def __init__(self):
+        try:
+            self.yaml_path = 'params.yaml'
+            self.data_transformation_dir = os.path.join(common_variable.ARTIFACT,common_variable.DATA_TRANSFORMATION_DIR)
+            self.transformed_train = os.path.join(self.data_transformation_dir,common_variable.TRAIN_FILE)
+            self.transformed_test = os.path.join(self.data_transformation_dir,common_variable.TEST_FILE)
+            self.model_file = os.path.join(common_variable.MODEL_DIR,common_variable.MODEL_FILE)
+            
+        except Exception as e:
+            my_log.error(e)
+            raise MyException(e,sys)
 

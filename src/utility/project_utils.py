@@ -8,24 +8,27 @@ import joblib
 
 
 
-def save_file(file_path : str ,data : any) -> any :
+def save_file(file_path : str ,data = None ,Model = None) -> any :
     try:
         file_lis = file_path.split('.')[-1].lower()
         if file_lis =='csv'  :
             try :
-                return pd.read_csv(file_path)
+                data.to_csv(file_path)
+                return "File saved successfully ..."
             except Exception as e :
                 my_log.error(e)
         
         if file_lis == 'yaml'  or file_lis == 'yml' :
             try :
-                return yaml.safe_load(file_path)
+                yaml.safe_dump(data,file_path)
+                return "File saved successfully ..."
             except Exception as e :
                 my_log.error(e)
 
-        if file_lis == 'joblib' or file_lis == 'pkl' :
+        elif file_lis == 'joblib' or file_lis == 'pkl' :
             try:
-                return joblib.load(file_path)
+                joblib.dump(Model , file_path)
+                return "File saved successfully ..."
             except Exception as e :
                 my_log.error(e)
         

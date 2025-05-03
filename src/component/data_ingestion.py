@@ -11,12 +11,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+import certifi
+ca = certifi.where()
+
 class DataIngestion:
     def __init__(self,config : DataIngestionConfig):
         try :
             self.config = config
             # self.artifact = artifact
-            self.client = pymongo.MongoClient(os.getenv('MONGO_URL'))
+            self.client = pymongo.MongoClient(os.getenv('MONGO_URL'),tlsCAFile = ca)
             self.data : pd.DataFrame = None
         except Exception as e :
             my_log.error(e)

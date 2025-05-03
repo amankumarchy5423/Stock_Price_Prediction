@@ -176,3 +176,4 @@ cython_debug/
 packages.txt
 reasearch/
 /artifact
+/my_model

@@ -9,3 +9,11 @@ MOGO_COLLECTION = 'stock_data'
 
 # Data Validation
 DATA_VALIDATION = 'data_validation'
+
+# Data Transformation
+DATA_TRANSFORMATION_DIR = 'data_transformation'
+TRAIN_FILE = 'train.csv'
+TEST_FILE = 'test.csv'
+
+MODEL_DIR = 'my_model'
+MODEL_FILE = 'preprocessor.joblib'

@@ -1,0 +1,14 @@
+numerical_col:
+  - open
+  - high
+  - low
+  - volume
+  - year
+  - month
+  - day
+  - day_of_week
+
+categorical_col:
+  - stock_symbol
+
+output_col: close
