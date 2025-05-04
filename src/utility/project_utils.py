@@ -5,6 +5,8 @@ import pandas as pd
 import numpy as np
 import yaml
 import joblib
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import GridSearchCV
 
 
 
@@ -18,7 +20,7 @@ def save_file(file_path : str ,data = None ,Model = None) -> any :
             except Exception as e :
                 my_log.error(e)
         
-        if file_lis == 'yaml'  or file_lis == 'yml' :
+        elif file_lis == 'yaml'  or file_lis == 'yml' :
             try :
                 yaml.safe_dump(data,file_path)
                 return "File saved successfully ..."
@@ -61,6 +63,13 @@ def open_file(file_path: str) -> any:
             except Exception as e:
                 my_log.error(f"YAML Load Error: {e}")
                 raise MyException(e, sys)
+        
+        elif file_ext in ['joblib','pkl']:
+            try:
+                return joblib.load(file_path)
+            except Exception as e:
+                my_log.error(e)
+                raise MyException(e,sys)
 
         else:
             msg = f"Unsupported file type: {file_ext}"
@@ -70,4 +79,57 @@ def open_file(file_path: str) -> any:
     except Exception as e:
         my_log.error(f"File open failed: {e}")
         raise MyException(e, sys)
+
+
+def scoring_value(model : any , x_test : pd.DataFrame,y_test : pd.DataFrame) -> float :
+    try:
+        return np.sum(cross_val_score(model,x_test,y_test,scoring='r2',cv=10 ))
+    except Exception as e:
+        my_log.error(e)
+        raise MyException(e,sys)
+    
+
+
+    
+
+def fine_tuning(models : dict , params : dict, x_train : pd.DataFrame, y_train : pd.DataFrame,
+                x_test : pd.DataFrame , y_test : pd.DataFrame) -> any :
+    try:
+        best_score = 0.0
+        best_model = None
+        best_model_name = None
+
+        for i in range(len(models)):
+            model = list(models.values())[i]
+            model_name = list(models.keys())[i]
+            param = params.get(model_name,{})
+
+            with mlflow.start_run(run_name=f"{model_name}_parent_run") as parent_run:
+                cv_model = GridSearchCV(model,param_grid=param,cv=10,verbose=1)
+                cv_model.fit(x_train,y_train)
+
+                for j in range(len(cv_model.cv_results_['params'])):
+                    with mlflow.start_run(run_name=f"{model_name}_child_run") as child_run:
+
+                        for param_name, param_value in cv_model.cv_results_['params'][j].items():
+                                mlflow.log_param(param_name, param_value)
+                        
+                        # y_pred = cv_model.predict(x_test)
+                        score = scoring_value(cv_model,x_test,y_test)
+                        mlflow.log_metric("accuracy" , score)
+
+                        if score > best_score :
+                            best_score = score
+                            best_model = cv_model.best_estimator_
+                            best_model_name = model_name
+
+        save_file(file_path='path',Model=best_model)
+
+
+    except Exception as e:
+        my_log.error(e)
+        raise MyException(e,sys)
+    
+
+# class create_objective:
 

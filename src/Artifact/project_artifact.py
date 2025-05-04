@@ -15,3 +15,8 @@ class DataTransformationArtifact:
     train_file : str
     test_file : str
     preprocessor_path : str
+
+@dataclass
+class ModelTrainerArtifact:
+    model_file : str
+    preprocessor_file : str

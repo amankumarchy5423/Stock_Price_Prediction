@@ -1,10 +1,11 @@
 from src.component.data_ingestion import DataIngestion
 from src.loggers.logger import my_log
 from src.Exception.Project_Exception import MyException
-from src.config.project_config import DataIngestionConfig,DataValidationConfig,DataTransformationConfig
-from src.Artifact.project_artifact import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact
+from src.config.project_config import DataIngestionConfig,DataValidationConfig,DataTransformationConfig,ModelTrainConfig
+from src.Artifact.project_artifact import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact,ModelTrainerArtifact
 from src.component.data_validation import DataValidation
 from src.component.data_transformation import DataTransformation
+from src.component.model_train import ModelTrain
 
 import os,sys
 
@@ -65,6 +66,20 @@ class TrainPipeline:
             my_log.error(e)
             raise MyException(e,sys)
         
+    def model_training_pipe(self,artifact : DataTransformationArtifact):
+        try:
+            my_log.info("<<< Model Training Started >>>")
+
+            config_obj = ModelTrainConfig()
+            model_train_obj = ModelTrain(config_obj,artifact)
+            output = model_train_obj.initiate_modeltrain()
+
+            my_log.info("<<< Model Training Ended >>>")
+            return output
+        except Exception as e :
+            my_log.error(e)
+            raise MyException(e,sys)
+        
     def initiate_pipeline(self) -> None:
         try:
             my_log.info(" <<< train pipeline started >>>")
@@ -77,6 +92,9 @@ class TrainPipeline:
 
             data_transformation_out = self.data_transformation_pipe(data_validation_out)
             my_log.info("data validation pipeline Completed successfully ...")
+
+            model_train_out = self.model_training_pipe(data_transformation_out)
+            my_log.info("model training pipeline completed successfully ...")
 
             my_log.info(" <<< train pipeline ended >>>")
         except Exception as e :

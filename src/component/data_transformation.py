@@ -44,48 +44,52 @@ class DataTransformation:
             my_log.error(e)
             raise MyException(e,sys)
         
-    def build_preprocessor(self,train_data : pd.DataFrame,test_data : pd.DataFrame,
-                           num_clm : list,cat_clm :list,out_clm : list) -> any:
+    def build_preprocessor(self, train_data: pd.DataFrame, test_data: pd.DataFrame,
+                       num_clm: list, cat_clm: list, out_clm: list) -> any:
         try:
-
-            # y = ['close']
-            # x = [col for col in train_data.columns() if col not in y  ]
-            # my_log.info("differenciate the dapendent and independent feature")
-            # my_log.info(f"the independent feature is {x}")
-
             num_column = Pipeline([
-                ('imputer' , SimpleImputer(strategy='mean')),
-                ('norm',StandardScaler())
+                ('imputer', SimpleImputer(strategy='mean')),
+                ('norm', StandardScaler())
             ])
             cat_column = Pipeline([
-                ('imputer',SimpleImputer(strategy='most_frequent')),
-                ('ohe',OneHotEncoder(sparse_output=False))
+                ('imputer', SimpleImputer(strategy='most_frequent')),
+                ('ohe', OneHotEncoder(sparse_output=False))
             ])
-            
-
-
-            preprocessor = ColumnTransformer(transformers=[
-                ('num',num_column,num_clm),
-                ('categorical',cat_column,cat_clm),
-                # ('dapendent',output_column,out_clm)
-            ],remainder='passthrough')
-            my_log.info(" data preprocessor are ready now ...")
-
-            le = LabelEncoder()
-            train_data['close'] = le.fit_transform(train_data['close'])
-            test_data['close'] = le.fit_transform(test_data['close'])
-
-            preprocessor.fit(train_data)
-            train_data_pre = preprocessor.transform(train_data)
-            test_data_pre = preprocessor.transform(test_data)
-            my_log.info("data are transformed ")
-
     
-            return preprocessor,pd.DataFrame(train_data_pre),pd.DataFrame(test_data_pre)
-            
-        except Exception as e :
+            preprocessor = ColumnTransformer(transformers=[
+                ('num', num_column, num_clm),
+                ('categorical', cat_column, cat_clm)
+            ], remainder='passthrough')
+    
+            my_log.info("Data preprocessor is ready.")
+    
+            X_train = train_data.drop(columns=out_clm)
+            X_test = test_data.drop(columns=out_clm)
+            my_log.info("output column drop from all dataframes")
+    
+            preprocessor.fit(X_train)
+    
+            train_data_pre = preprocessor.transform(X_train)
+            test_data_pre = preprocessor.transform(X_test)
+    
+            my_log.info("Data transformed by preprocessor.")
+    
+            transformed_train = pd.DataFrame(train_data_pre)
+            transformed_test = pd.DataFrame(test_data_pre)
+    
+            # Add back the target column
+            # for col in out_clm:
+            transformed_train[out_clm] = train_data[out_clm].values
+            transformed_test[out_clm] = test_data[out_clm].values
+    
+            my_log.info("Output column(s) added back to transformed data.")
+    
+            return preprocessor, transformed_train, transformed_test
+
+        except Exception as e:
             my_log.error(e)
-            raise MyException(e,sys)
+            raise MyException(e, sys)
+
     
     def save_local(self,train_data: pd.DataFrame,test_data: pd.DataFrame,model : object) -> None:
         try:

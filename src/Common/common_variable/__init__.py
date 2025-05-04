@@ -16,4 +16,5 @@ TRAIN_FILE = 'train.csv'
 TEST_FILE = 'test.csv'
 
 MODEL_DIR = 'my_model'
-MODEL_FILE = 'preprocessor.joblib'
+PREMODEL_FILE = 'preprocessor.joblib'
+MODEL_FILE = 'model.joblib'
