@@ -52,4 +52,11 @@ class ModelTrainConfig:
         except Exception as e:
             my_log.error(e)
             raise MyException(e,sys)
+        
+class ModelEvaluationConfig:
+    try:
+        pass
+    except Exception as e :
+        my_log.error(e)
+        raise MyException(e,sys)
 

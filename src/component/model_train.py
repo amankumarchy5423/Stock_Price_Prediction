@@ -9,6 +9,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor,GradientBoostingRegressor
 from sklearn.svm import SVR
 from sklearn.model_selection import train_test_split,GridSearchCV
+from sklearn.metrics import mean_squared_error,r2_score,mean_absolute_error
 
 
 
@@ -32,6 +33,7 @@ os.environ['DAGSHUB_TOKEN'] = os.getenv('DAGSHUB_TOKEN')
 
 
 
+
 class ModelTrain:
     def __init__(self,config : ModelTrainConfig,artifact : DataTransformationArtifact):
         try:
@@ -44,12 +46,12 @@ class ModelTrain:
     def model_and_param(self) -> dict:
         try:
             models : dict = {
-                'LR':LogisticRegression(),
+                # 'LR':LogisticRegression(),
                 'EN':ElasticNet(),
-                'DT':DecisionTreeRegressor(),
-                'RF':RandomForestRegressor(),
-                'GB':GradientBoostingRegressor(),
-                'SVR':SVR()
+                # 'DT':DecisionTreeRegressor(),
+                # 'RF':RandomForestRegressor(),
+                # 'GB':GradientBoostingRegressor(),
+                # 'SVR':SVR()
 
             }
             my_log.info("dict of models created")
@@ -63,43 +65,62 @@ class ModelTrain:
             raise MyException(e,sys)
         
     
-    def fine_tuning(self,models : dict , params : dict, x_train : pd.DataFrame, y_train : pd.DataFrame,
-                x_test : pd.DataFrame , y_test : pd.DataFrame) -> any :
+    def fine_tuning(self, x_train: pd.DataFrame, y_train: pd.DataFrame,
+                x_test: pd.DataFrame, y_test: pd.DataFrame) -> any:
         try:
+            models : dict = {
+                # 'LR':LogisticRegression(),
+                'EN':ElasticNet(),
+                # 'DT':DecisionTreeRegressor(),
+                # 'RF':RandomForestRegressor(),
+                # 'GB':GradientBoostingRegressor(),
+                # 'SVR':SVR()
+
+            }
+            my_log.info("dict of models created")
+
+            params : dict = open_file(file_path=self.config.prams_file)
+            my_log.info("params file opened")
+
             best_score = self.config.model_thresold
             best_model = None
             best_model_name = None
-
-            for i in range(len(models)):
-                model = list(models.values())[i]
-                model_name = list(models.keys())[i]
-                param = params.get(model_name,{})
-
+    
+            while mlflow.active_run():
+                mlflow.end_run()
+    
+            for model_name, model in models.items():
+                param = params.get(model_name, {})
+    
                 with mlflow.start_run(run_name=f"{model_name}_parent_run") as parent_run:
-                    cv_model = GridSearchCV(model,param_grid=param,cv=10,verbose=1)
-                    cv_model.fit(x_train,y_train)
-
-                    for j in range(len(cv_model.cv_results_['params'])):
-                        with mlflow.start_run(run_name=f"{model_name}_child_run") as child_run:
-
-                            for param_name, param_value in cv_model.cv_results_['params'][j].items():
+                    print(f"Started parent run: {parent_run.info.run_id}")
+                    cv_model = GridSearchCV(model, param_grid=param, cv=10, verbose=1)
+                    cv_model.fit(x_train, y_train)
+    
+                    for j, param_set in enumerate(cv_model.cv_results_['params']):
+                        with mlflow.start_run(run_name=f"{model_name}_child_run_{j}", nested=True) as child_run:
+                            print(f"Started child run: {child_run.info.run_id}")
+                            for param_name, param_value in param_set.items():
                                 mlflow.log_param(param_name, param_value)
-                        
-                            # y_pred = cv_model.predict(x_test)
-                            score = scoring_value(cv_model,x_test,y_test)
-                            mlflow.log_metric("accuracy" , score)
-
-                        if score > best_score :
-                            best_score = score
-                            best_model = cv_model.best_estimator_
-                            best_model_name = model_name
-
-            save_file(file_path=self.config.model_file,Model=best_model)
-
-
+    
+                            score = cv_model.cv_results_['mean_test_score'][j]
+                            
+                            mlflow.log_metric("accuracy", score)
+                            my_log.info(f"model name {model_name} gives accuracy of {score}")
+    
+                            if score > best_score:
+                                best_score = score
+                                best_model = cv_model.best_estimator_
+                                best_model_name = model_name
+    
+            save_file(file_path=self.config.model_file, Model=best_model)
+    
         except Exception as e:
             my_log.error(e)
-            raise MyException(e,sys)
+            while mlflow.active_run():
+                mlflow.end_run()
+            raise MyException(e, sys)
+
         
     def initiate_modeltrain(self) ->ModelTrainerArtifact:
         try:
@@ -109,10 +130,10 @@ class ModelTrain:
             x_train,x_test,y_train,y_test = train_test_split(train_data.iloc[:,:-1],train_data.iloc[:,-1],random_state=42)
             my_log.info("train and test data are loade .....")
 
-            models,params = self.model_and_param()
+            # models,params = self.model_and_param()
             my_log.info("models and params are loaded .....")
 
-            self.fine_tuning(models=models,params=params,x_train=x_train,y_train=y_train,x_test=x_test,y_test=y_test)
+            self.fine_tuning(x_train=x_train,y_train=y_train,x_test=x_test,y_test=y_test)
 
             return ModelTrainerArtifact(model_file=self.config.model_file,
                                         preprocessor_file=self.artifact.preprocessor_path)
