@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: airflow
+  name: preprocessing
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: airflow
+      app: preprocessing
   template:
     metadata:
       labels:
-        app: airflow
+        app: preprocessing
     spec:
       containers:
-        - name: airflow
-          image: quay.io/astronomer/astro-runtime:12.8.0
+        - name: preprocessing
+          image: amanmlops/stock-price:v1
           ports:
             - containerPort: 8080
           command: ["python" ,"main.py"]
@@ -27,7 +27,7 @@ metadata:
   name: airflow-service
 spec:
   selector:
-    app: airflow
+    app: preprocessing
   ports:
     - protocol: TCP
       port: 80

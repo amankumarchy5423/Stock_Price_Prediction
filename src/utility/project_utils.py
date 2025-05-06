@@ -1,5 +1,7 @@
 from src.Exception.Project_Exception import MyException
 from src.loggers.logger import my_log
+from src.cloud.cloud_conn import AwsConn
+
 import os,sys
 import pandas as pd
 import numpy as np
@@ -91,7 +93,9 @@ def scoring_value(model, x_test, y_test) -> float:
     
 def check_bucket(bucket_name :str) -> bool:
     try:
-        pass
+        AwsConn.s3_client.head_bucket(Bucket=bucket_name)
+        print(f"✅ Bucket '{bucket_name}' exists and is accessible.")
+        return True
     except Exception as e:
         my_log.error(e)
         raise MyException(e, sys)

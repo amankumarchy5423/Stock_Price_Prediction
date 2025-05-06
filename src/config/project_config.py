@@ -54,9 +54,12 @@ class ModelTrainConfig:
             raise MyException(e,sys)
         
 class ModelEvaluationConfig:
-    try:
-        pass
-    except Exception as e :
-        my_log.error(e)
-        raise MyException(e,sys)
+    def __init__(self):
+        try:
+            
+            self.bucket_name = common_variable.BUCKET_NAME
+            self.model_key = "models/ml_model/ml_model.joblib"
+        except Exception as e :
+            my_log.error(e)
+            raise MyException(e,sys)
 

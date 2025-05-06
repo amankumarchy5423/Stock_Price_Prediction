@@ -7,6 +7,14 @@ from src.Pipeline.train_pipeline import TrainPipeline
 import sys
 
 
+# import os
+# os.environ["DAGSHUB_TOKEN"] = os.getenv("DAGSHUB_TOKEN")
+
+# import os
+# from dagshub.auth import login
+
+# Read token from environment and login
+# login(token=os.getenv("DAGSHUB_TOKEN"))
 
 
 # class Main:

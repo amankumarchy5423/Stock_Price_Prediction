@@ -19,12 +19,14 @@ import mlflow
 from dotenv import load_dotenv
 load_dotenv()
 
-import dagshub
-dagshub.init(repo_owner='amankumarchy5423', repo_name='Stock_Price_Prediction', mlflow=True)
+# import dagshub
+# dagshub.init(repo_owner='amankumarchy5423', repo_name='Stock_Price_Prediction', mlflow=True)
 
 
-os.environ['MLFLOW_TRACKING_URI'] = os.getenv('DAGSHUB_URL')
-os.environ['DAGSHUB_TOKEN'] = os.getenv('DAGSHUB_TOKEN')
+mlflow.set_tracking_uri(uri=os.getenv('DAGSHUB_URL'))
+
+os.environ["MLFLOW_TRACKING_USERNAME"] = "amankumarchy5423" 
+os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("DAGSHUB_TOKEN")  
 # mlflow.set_experiment(experiment_id=os.getenv('DAGSHUB_EXPERIMENT_ID'))
 
 

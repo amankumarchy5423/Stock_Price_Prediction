@@ -18,3 +18,5 @@ TEST_FILE = 'test.csv'
 MODEL_DIR = 'my_model'
 PREMODEL_FILE = 'preprocessor.joblib'
 MODEL_FILE = 'model.joblib'
+
+BUCKET_NAME = 'stock-price-bucket'
