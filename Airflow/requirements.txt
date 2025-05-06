@@ -1,0 +1,4 @@
+pymongo
+datetime
+requests
+dotenv

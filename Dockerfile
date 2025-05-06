@@ -1,15 +1,13 @@
-FROM quay.io/astronomer/astro-runtime:12.8.0
-
-# FROM python:3.12-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
 COPY . /app/
 
-ENV DAGSHUB_TOKEN = 06ff030bf203ef6af72ea419852b98883469730a
+ENV DAGSHUB_TOKEN=06ff030bf203ef6af72ea419852b98883469730a
 
 RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 5050
 
-CMD ["uv","python", "main.py"]
+CMD ["python", "main.py"]
