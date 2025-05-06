@@ -58,9 +58,9 @@ class ModelPush:
             if self.eval_artifact.report:
                 # s3 = AwsConn()
                 s3= boto3.client('s3',
-                                 aws_access_key_id = 'AKIA5MSUB5SJUMK7KNN6',
-                                 aws_secret_access_key = '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',
-                                 region_name='us-east-1')
+                                 aws_access_key_id = os.getenv('ACCESS_kEY_ID'),
+                                 aws_secret_access_key = os.getenv('SECRET_ACCESS_KEY'),
+                                 region_name=os.getenv('REGION_NAME'))
 
                 s3.upload_file(
                     Filename=self.train_artifact.preprocessor_file,
