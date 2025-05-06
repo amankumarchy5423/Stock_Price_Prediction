@@ -20,3 +20,10 @@ class DataTransformationArtifact:
 class ModelTrainerArtifact:
     model_file : str
     preprocessor_file : str
+
+@dataclass
+class ModelEvaluatorArtifact:
+    report : bool
+    bucket_name : str
+    ml_model_key : str
+    pre_model_key : str

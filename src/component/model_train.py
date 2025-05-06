@@ -48,12 +48,12 @@ class ModelTrain:
     def model_and_param(self) -> dict:
         try:
             models : dict = {
-                # 'LR':LogisticRegression(),
+                'LR':LogisticRegression(),
                 'EN':ElasticNet(),
-                # 'DT':DecisionTreeRegressor(),
-                # 'RF':RandomForestRegressor(),
-                # 'GB':GradientBoostingRegressor(),
-                # 'SVR':SVR()
+                'DT':DecisionTreeRegressor(),
+                'RF':RandomForestRegressor(),
+                'GB':GradientBoostingRegressor(),
+                'SVR':SVR()
 
             }
             my_log.info("dict of models created")
@@ -71,12 +71,11 @@ class ModelTrain:
                 x_test: pd.DataFrame, y_test: pd.DataFrame) -> any:
         try:
             models : dict = {
-                # 'LR':LogisticRegression(),
                 'EN':ElasticNet(),
-                # 'DT':DecisionTreeRegressor(),
-                # 'RF':RandomForestRegressor(),
-                # 'GB':GradientBoostingRegressor(),
-                # 'SVR':SVR()
+                'DT':DecisionTreeRegressor(),
+                'RF':RandomForestRegressor(),
+                'GB':GradientBoostingRegressor(),
+                'SVR':SVR()
 
             }
             my_log.info("dict of models created")

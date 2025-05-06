@@ -91,14 +91,22 @@ def scoring_value(model, x_test, y_test) -> float:
         my_log.error(e)
         raise MyException(e, sys)
     
-def check_bucket(bucket_name :str) -> bool:
+def check_bucket(bucket_name: str) -> bool:
     try:
-        AwsConn.s3_client.head_bucket(Bucket=bucket_name)
-        print(f"✅ Bucket '{bucket_name}' exists and is accessible.")
+        # Always pass region_name (you can make it configurable or hardcode for now)
+        s3 = AwsConn(region_name="ap-south-1")  # Replace with your bucket's region
+
+        # Use the instance's client
+        s3.client.head_bucket(Bucket=bucket_name)
+
+        my_log.info(f"✅ Bucket '{bucket_name}' exists and is accessible.")
         return True
+
     except Exception as e:
-        my_log.error(e)
-        raise MyException(e, sys)
+        my_log.error(f"❌ Bucket '{bucket_name}' check failed: {e}")
+        return False
+
+        #  MyException(e, sys)
 
     
 

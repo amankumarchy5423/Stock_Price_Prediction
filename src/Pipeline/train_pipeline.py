@@ -1,11 +1,13 @@
 from src.component.data_ingestion import DataIngestion
 from src.loggers.logger import my_log
 from src.Exception.Project_Exception import MyException
-from src.config.project_config import DataIngestionConfig,DataValidationConfig,DataTransformationConfig,ModelTrainConfig
-from src.Artifact.project_artifact import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact,ModelTrainerArtifact
+from src.config.project_config import DataIngestionConfig,DataValidationConfig,DataTransformationConfig,ModelTrainConfig,ModelEvaluationConfig
+from src.Artifact.project_artifact import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact,ModelTrainerArtifact,ModelEvaluatorArtifact
 from src.component.data_validation import DataValidation
 from src.component.data_transformation import DataTransformation
 from src.component.model_train import ModelTrain
+from src.component.model_evaluation import ModelEvaluation
+from src.component.model_push import ModelPush
 
 import os,sys
 
@@ -79,6 +81,35 @@ class TrainPipeline:
         except Exception as e :
             my_log.error(e)
             raise MyException(e,sys)
+    
+    def model_evaluation_pipe(self,artifact1 : ModelTrainerArtifact,artifact2 : DataTransformationArtifact):
+        try:
+            my_log.info("<<< Model Evaluation Started >>>")
+
+            config_obj = ModelEvaluationConfig()
+            eval_obj = ModelEvaluation(config=config_obj,
+                                       artifact=artifact1,
+                                       transformation_artifact=artifact2)
+            output=eval_obj.initiate_model_eval()
+
+            my_log.info("<<< Model Evaluation Ended >>>")
+            return output
+        except Exception as e :
+            my_log.error(e)
+            raise MyException(e,sys)
+        
+    def model_pusher_pipe(self,artifact : ModelEvaluatorArtifact,artifact2 : ModelTrainerArtifact):
+        try:    
+            my_log.info("<<< Model Pusher Started >>>")
+
+            pusher_obj = ModelPush(model_eval_artifact=artifact,
+                                   model_train_artifact=artifact2)
+            pusher_obj.initiate_modelpush()
+
+            my_log.info("<<< Model Pusher Ended >>>")
+        except Exception as e :
+            my_log.error(e)
+            raise MyException(e,sys)
         
     def initiate_pipeline(self) -> None:
         try:
@@ -96,6 +127,10 @@ class TrainPipeline:
             model_train_out = self.model_training_pipe(data_transformation_out)
             my_log.info("model training pipeline completed successfully ...")
 
+            eval_out=self.model_evaluation_pipe(artifact1=model_train_out,artifact2=data_transformation_out)
+            my_log.info("model evaluation pipeline completed successfully ...")
+
+            self.model_pusher_pipe(artifact2=model_train_out, artifact=eval_out)
             my_log.info(" <<< train pipeline ended >>>")
         except Exception as e :
             my_log.error(e)

@@ -58,8 +58,10 @@ class ModelEvaluationConfig:
         try:
             
             self.bucket_name = common_variable.BUCKET_NAME
-            self.model_key = "models/ml_model/ml_model.joblib"
+            self.model_key = "models/ml_model/model.joblib"
+            self.pre_model_key = "models/pre_model/preprocessor.joblib"
         except Exception as e :
             my_log.error(e)
             raise MyException(e,sys)
 
+# my_model\preprocessor.joblib

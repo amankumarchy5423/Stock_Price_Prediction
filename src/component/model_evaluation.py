@@ -1,7 +1,7 @@
 from src.Exception.Project_Exception import MyException
 from src.loggers.logger import my_log
 from src.config.project_config import ModelEvaluationConfig
-from src.Artifact.project_artifact import ModelTrainerArtifact,DataTransformationArtifact
+from src.Artifact.project_artifact import ModelTrainerArtifact,DataTransformationArtifact,ModelEvaluatorArtifact
 from src.cloud.cloud_conn import AwsConn
 from src.utility.project_utils import check_bucket,scoring_value
 
@@ -58,7 +58,7 @@ class ModelEvaluation:
                local_model_score = scoring_value(local_model,x_test=x_data,y_test=y_data)   
                my_log.info(f"local model score is calculated and score is {local_model_score}..")
 
-               if cloud_model_score > local_model_score:
+               if cloud_model_score >= local_model_score:
                    return False
                else:
                    return True
@@ -82,7 +82,12 @@ class ModelEvaluation:
 
             report = self.evaluate_model(model,x_data,y_data)
             my_log.info(f"model evaluation is completed and report is {report}..")
-            
+
+            return ModelEvaluatorArtifact(report=report,
+                                          bucket_name=self.config.bucket_name,
+                                          ml_model_key=self.config.model_key,
+                                          pre_model_key=self.config.pre_model_key)
+
         except Exception as e:
             my_log.error(f"Error in ModelEvaluation initiate_model_eval : {str(e)}")
             raise MyException(f"Error in ModelEvaluation initiate_model_eval : {str(e)}",sys)
