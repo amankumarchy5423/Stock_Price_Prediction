@@ -62,6 +62,7 @@ class ModelPush:
                                  aws_secret_access_key = os.getenv('SECRET_ACCESS_KEY'),
                                  region_name=os.getenv('REGION_NAME'))
 
+
                 s3.upload_file(
                     Filename=self.train_artifact.preprocessor_file,
                     Bucket=self.eval_artifact.bucket_name,
