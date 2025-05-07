@@ -1,24 +1,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: preprocessing
+  name: airflow
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: preprocessing
+      app: airflow
   template:
     metadata:
       labels:
-        app: preprocessing
+        app: airflow
     spec:
       containers:
-        - name: preprocessing
-          image: amanmlops/stock-price:v1
+        - name: airflow
+          image: amanmlops/airflow:v1
           ports:
             - containerPort: 8080
-          command: ["python" ,"main.py"]
+          command: ["astro", "dev", "start"]
 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: preprocess
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: preprocess
+  template:
+    metadata:
+      labels:
+        app: preprocess
+    spec:
+      containers:
+        - name: preprocess
+          image: amanmlops/stock-price:v1
+          ports:
+            - containerPort: 5050
+          command: ["python", "main.py"]
 
 ---
 apiVersion: v1
@@ -27,10 +48,26 @@ metadata:
   name: airflow-service
 spec:
   selector:
-    app: preprocessing
+    app: airflow
   ports:
     - protocol: TCP
-      port: 80
+      port: 8081
       targetPort: 8080
   type: LoadBalancer
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: preprocess-service
+spec:
+  selector:
+    app: preprocess
+  ports:
+    - protocol: TCP
+      port: 5051
+      targetPort: 5050
+  type: LoadBalancer
+
 
