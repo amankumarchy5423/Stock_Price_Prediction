@@ -74,8 +74,8 @@ class DataTransformation:
     
             my_log.info("Data transformed by preprocessor.")
     
-            transformed_train = pd.DataFrame(train_data_pre)
-            transformed_test = pd.DataFrame(test_data_pre)
+            transformed_train = pd.DataFrame(train_data_pre,index=False)
+            transformed_test = pd.DataFrame(test_data_pre,index=False)
     
             # Add back the target column
             # for col in out_clm:

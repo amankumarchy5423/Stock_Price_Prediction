@@ -2,31 +2,31 @@
 
 EN:
   alpha: [0.1, 1.0, 10.0]
-  l1_ratio: [0.2, 0.5, 0.8]
-  max_iter: [1000]
-  tol: [0.0001, 0.001]
+  # l1_ratio: [0.2, 0.5, 0.8]
+  # max_iter: [1000]
+  # tol: [0.0001, 0.001]
 
-DT:
-  max_depth: [ 5, 10, 20]
-  min_samples_split: [2, 5, 10]
-  min_samples_leaf: [1, 2, 4]
+# DT:
+#   max_depth: [ 5, 10, 20]
+#   min_samples_split: [2, 5, 10]
+#   min_samples_leaf: [1, 2, 4]
 
-RF:
-  n_estimators: [100, 200]
-  max_depth: [None, 10, 20]
-  min_samples_split: [2, 5]
-  min_samples_leaf: [1, 2]
-  bootstrap: [True, False]
+# RF:
+#   n_estimators: [100, 200]
+#   max_depth: [None, 10, 20]
+#   min_samples_split: [2, 5]
+#   min_samples_leaf: [1, 2]
+#   bootstrap: [True, False]
 
-GB:
-  n_estimators: [100, 200]
-  learning_rate: [0.01, 0.1, 0.2]
-  max_depth: [3, 5, 10]
-  min_samples_split: [2, 5]
-  min_samples_leaf: [1, 2]
+# GB:
+#   n_estimators: [100, 200]
+#   learning_rate: [0.01, 0.1, 0.2]
+#   max_depth: [3, 5, 10]
+#   min_samples_split: [2, 5]
+#   min_samples_leaf: [1, 2]
 
-SVR:
-  kernel: ['rbf', 'linear']
-  C: [0.1, 1.0, 10.0]
-  epsilon: [0.1, 0.2, 0.5]
-  gamma: ['scale', 'auto']
+# SVR:
+#   kernel: ['rbf', 'linear']
+#   C: [0.1, 1.0, 10.0]
+#   epsilon: [0.1, 0.2, 0.5]
+#   gamma: ['scale', 'auto']

@@ -14,7 +14,10 @@ load_dotenv()
 
 client = mlflow.MlflowClient()
 
-
+aws_id = os.getenv('ACCESS_kEY_ID')
+aws_secret = os.getenv('SECRET_ACCESS_KEY')
+aws_region = os.getenv('REGION_NAME')
+my_log.info(f"aws id {aws_id},secret key is {aws_secret},region is {aws_region}")
 
 class ModelPush:
     def __init__(self,model_train_artifact : ModelTrainerArtifact, model_eval_artifact : ModelEvaluatorArtifact):
@@ -58,15 +61,15 @@ class ModelPush:
             if self.eval_artifact.report:
                 # s3 = AwsConn()
                 s3= boto3.client('s3',
-                                 aws_access_key_id = os.getenv('ACCESS_kEY_ID'),
-                                 aws_secret_access_key = os.getenv('SECRET_ACCESS_KEY'),
-                                 region_name=os.getenv('REGION_NAME'))
+                              aws_access_key_id = aws_id,
+                              aws_secret_access_key = aws_secret,
+                              region_name = aws_region)
 
 
                 s3.upload_file(
                     Filename=self.train_artifact.preprocessor_file,
                     Bucket=self.eval_artifact.bucket_name,
-                    Key="models/ml_model/premodel.joblib"
+                    Key=self.eval_artifact.ml_model_key
                 )
                 my_log.info("ml_model is uploaded to s3 bucket")
 

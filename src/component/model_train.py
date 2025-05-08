@@ -72,10 +72,10 @@ class ModelTrain:
         try:
             models : dict = {
                 'EN':ElasticNet(),
-                'DT':DecisionTreeRegressor(),
-                'RF':RandomForestRegressor(),
-                'GB':GradientBoostingRegressor(),
-                'SVR':SVR()
+                # 'DT':DecisionTreeRegressor(),
+                # 'RF':RandomForestRegressor(),
+                # 'GB':GradientBoostingRegressor(),
+                # 'SVR':SVR()
 
             }
             my_log.info("dict of models created")
