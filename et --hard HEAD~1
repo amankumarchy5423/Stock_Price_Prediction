@@ -1,0 +1,22 @@
+[33meb406e7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m all kubernetes file are cleand and runs
+[33m51bf225[m Removed AWS credentials
+[33mea19799[m all uptodate
+[33me341dd9[m some change in model eval
+[33m53ccb02[m all ml development steps are completed
+[33m9e82737[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m model evaluation completed
+[33mc19c3a7[m cloud connection are setuped
+[33madbc5de[m model training issue fixed
+[33m1c0b81c[m model training completed
+[33m2067e09[m  data transformation completed
+[33m6bc235b[m  data validation part completed
+[33m528f66b[m utility file added
+[33m6265318[m data ingestion and dvc setup completed
+[33m4b27fdb[m  data ingestion part completed
+[33mbc278e9[m  testing commit
+[33mca1f1af[m custom exception added
+[33mc02839f[m Merge pull request #1 from amankumarchy5423/aman
+[33m5a89627[m[33m ([m[1;31morigin/aman[m[33m)[m logger file is created
+[33m642e175[m freezing requirement.txt
+[33m594ea58[m source file setup completed
+[33md480353[m ETL pipeline developed
+[33m7c4f3d6[m Initial commit
