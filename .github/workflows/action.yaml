@@ -1,0 +1,66 @@
+name: CI - Python Project
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install --no-cache-dir -r requirements.txt
+
+    # - name: Run tests
+    #   run: |
+    #     # Replace this with your testing framework (pytest/unittest/etc.)
+    #     pytest
+
+
+# name: CD - Deploy on EC2 via Self-hosted Runner
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   deploy:
+#     runs-on: self-hosted
+
+#     steps:
+#     - name: Checkout the code
+#       uses: actions/checkout@v3
+
+#     - name: Set up Kubeconfig (if needed)
+#       run: |
+#         echo "Using default kubeconfig at ~/.kubernet/config"
+#         kubectl version --client
+
+#     - name: Create Kubernetes Secret from GitHub Secrets
+#       run: |
+#         echo "Creating/updating Kubernetes secret: app-secrets"
+#         kubectl delete secret app-secrets --ignore-not-found
+#         kubectl create secret generic app-secrets \
+#           --from-literal=DB_USER=${{ secrets.DB_USER }} \
+#           --from-literal=DB_PASS=${{ secrets.DB_PASS }} \
+#           --from-literal=API_KEY=${{ secrets.API_KEY }}
+
+#     - name: Apply Kubernetes Manifests
+#       run: |
+#         echo "Applying Kubernetes manifest (kubernet.yaml)..."
+#         kubectl apply -f kubernet.yaml
+
